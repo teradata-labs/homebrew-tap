@@ -1,6 +1,6 @@
 # Teradata Labs Homebrew Tap
 
-Official Homebrew tap for Teradata Labs developer tools and CLI utilities.
+Official Homebrew tap for Teradata Labs open source software.
 
 ## Installation
 
