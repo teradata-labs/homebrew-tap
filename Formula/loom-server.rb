@@ -1,16 +1,16 @@
 class LoomServer < Formula
   desc "Loom agent server with multi-agent orchestration and gRPC/HTTP APIs"
   homepage "https://github.com/teradata-labs/loom"
-  version "1.0.1"
+  version "1.0.2"
   license "Apache-2.0"
 
   on_macos do
     if Hardware::CPU.arm?
-      url "https://github.com/teradata-labs/loom/releases/download/v1.0.1/looms-darwin-arm64.tar.gz"
-      sha256 "b68621fe2c62a6f41c12c7e80f424d9f1c0fbda1323d807034db55a5207a1e95"
+      url "https://github.com/teradata-labs/loom/releases/download/v1.0.2/looms-darwin-arm64.tar.gz"
+      sha256 "297d40815d2b180affa73baa8baaa6fed095be63614aba83410c9a7610c6a680"
     else
-      url "https://github.com/teradata-labs/loom/releases/download/v1.0.1/looms-darwin-amd64.tar.gz"
-      sha256 "88d1a857acebf48b5cfb08ba8df50d82ed810ffe1d19a5161937b25bf2e4895b"
+      url "https://github.com/teradata-labs/loom/releases/download/v1.0.2/looms-darwin-amd64.tar.gz"
+      sha256 "e63d3bde633c0c4a9dbcb4503247bbf1fd1f5502ca578284cd2a606061ce5126"
     end
   end
 
