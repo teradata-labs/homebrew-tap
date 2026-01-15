@@ -1,16 +1,16 @@
 class Loom < Formula
   desc "LLM agent framework with natural language agent creation"
   homepage "https://github.com/teradata-labs/loom"
-  version "1.0.1"
+  version "1.0.2"
   license "Apache-2.0"
 
   on_macos do
     if Hardware::CPU.arm?
-      url "https://github.com/teradata-labs/loom/releases/download/v1.0.1/loom-darwin-arm64.tar.gz"
-      sha256 "50f9715a2310427c4419d942dd45450ea026321a8aee462df72becb65643f46a"
+      url "https://github.com/teradata-labs/loom/releases/download/v1.0.2/loom-darwin-arm64.tar.gz"
+      sha256 "5c84c277caf57165e160ffddf641f024292d769990e377fab0bbd86b20c63d18"
     else
-      url "https://github.com/teradata-labs/loom/releases/download/v1.0.1/loom-darwin-amd64.tar.gz"
-      sha256 "e4cd3476253bad48fd4cae3a4071510dccd26f98c9fbb92f118dab479bf73d9b"
+      url "https://github.com/teradata-labs/loom/releases/download/v1.0.2/loom-darwin-amd64.tar.gz"
+      sha256 "06cdefba774ddcacb1066b13646184d1ba8ae89a0dbfa9d894ca2c86308b6c1c"
     end
   end
 
