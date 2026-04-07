@@ -4,6 +4,11 @@ class LoomServer < Formula
   version "1.0.1"
   license "Apache-2.0"
 
+  resource "loom-patterns" do
+    url "https://github.com/teradata-labs/loom/archive/refs/tags/v1.0.1.tar.gz"
+    sha256 "1fa28396813e14df17d318d380d7950c3b006fa63a4f406151d31cf255cd6d6c"
+  end
+
   on_macos do
     if Hardware::CPU.arm?
       url "https://github.com/teradata-labs/loom/releases/download/v1.0.1/looms-darwin-arm64.tar.gz"
@@ -27,23 +32,15 @@ class LoomServer < Formula
     system "mkdir", "-p", loom_dir
     system "mkdir", "-p", patterns_dir
 
-    # Download and install patterns
-    ohai "Downloading patterns..."
-    patterns_url = "https://github.com/teradata-labs/loom/archive/refs/tags/v#{version}.tar.gz"
-    patterns_tmp = "#{Dir.tmpdir}/loom-patterns-#{version}.tar.gz"
+    ohai "Installing patterns..."
+    resource("loom-patterns").stage do
+      loom_src = Pathname.glob("loom-*").find(&:directory?)
+      next unless loom_src&.join("patterns")&.directory?
 
-    system "curl", "-L", "-o", patterns_tmp, patterns_url
-    system "tar", "xzf", patterns_tmp, "-C", Dir.tmpdir
-
-    extracted_dir = "#{Dir.tmpdir}/loom-#{version}"
-    if File.directory?("#{extracted_dir}/patterns")
-      system "cp", "-R", "#{extracted_dir}/patterns/", patterns_dir
+      system "cp", "-R", "#{loom_src}/patterns/.", patterns_dir
       pattern_count = Dir.glob("#{patterns_dir}/**/*.yaml").length
       ohai "Installed #{pattern_count} pattern files to #{patterns_dir}"
     end
-
-    # Cleanup
-    system "rm", "-rf", patterns_tmp, extracted_dir
 
     # Create default config if it doesn't exist
     unless File.exist?(config_file)

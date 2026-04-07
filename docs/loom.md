@@ -346,9 +346,10 @@ workflow:
 import (
     loomv1 "github.com/teradata-labs/loom/gen/go/loom/v1"
     "google.golang.org/grpc"
+    "google.golang.org/grpc/credentials/insecure"
 )
 
-conn, _ := grpc.Dial("localhost:60051", grpc.WithInsecure())
+conn, _ := grpc.NewClient("localhost:60051", grpc.WithTransportCredentials(insecure.NewCredentials()))
 client := loomv1.NewLoomServiceClient(conn)
 
 stream, _ := client.Chat(context.Background())
