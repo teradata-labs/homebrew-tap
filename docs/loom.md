@@ -361,6 +361,8 @@ stream.Send(&loomv1.ChatRequest{
 })
 ```
 
+In production code, check errors from `NewClient`, `Chat`, and `Send`, and call `conn.Close()` when you are done with the connection.
+
 ### HTTP API
 
 ```bash
