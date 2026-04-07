@@ -5,16 +5,16 @@ class Loom < Formula
   license "Apache-2.0"
 
   resource "loom-patterns" do
-    url "https://github.com/teradata-labs/loom/archive/refs/tags/v1.0.1.tar.gz"
+    url "https://github.com/teradata-labs/loom/archive/refs/tags/v#{version}.tar.gz"
     sha256 "1fa28396813e14df17d318d380d7950c3b006fa63a4f406151d31cf255cd6d6c"
   end
 
   on_macos do
     if Hardware::CPU.arm?
-      url "https://github.com/teradata-labs/loom/releases/download/v1.3.0/loom-darwin-arm64.tar.gz"
+      url "https://github.com/teradata-labs/loom/releases/download/v#{version}/loom-darwin-arm64.tar.gz"
       sha256 "03b3b0d5f39caedc9b23573c7e135c5d92e2c861dc1710f78f931eda1915f76e"
     else
-      url "https://github.com/teradata-labs/loom/releases/download/v1.3.0/loom-darwin-amd64.tar.gz"
+      url "https://github.com/teradata-labs/loom/releases/download/v#{version}/loom-darwin-amd64.tar.gz"
       sha256 "4b67dc7f6f2a2045df843591c021705cb4c88cd51f8123300113bd503e4ba649"
     end
   end
@@ -33,7 +33,8 @@ class Loom < Formula
     ohai "Installing patterns..."
     resource("loom-patterns").stage do
       loom_src = Pathname.glob("loom-*").find(&:directory?)
-      next unless loom_src&.join("patterns")&.directory?
+      odie "Could not find Loom source directory in patterns archive" unless loom_src&.directory?
+      odie "Could not find patterns/ in Loom source (archive layout may have changed)" unless loom_src.join("patterns").directory?
 
       system "cp", "-R", "#{loom_src}/patterns/.", patterns_dir
       pattern_count = Dir.glob("#{patterns_dir}/**/*.yaml").length
