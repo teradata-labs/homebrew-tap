@@ -4,6 +4,11 @@ class Loom < Formula
   version "1.3.0"
   license "Apache-2.0"
 
+  resource "loom-patterns" do
+    url "https://github.com/teradata-labs/loom/archive/refs/tags/v1.0.1.tar.gz"
+    sha256 "1fa28396813e14df17d318d380d7950c3b006fa63a4f406151d31cf255cd6d6c"
+  end
+
   on_macos do
     if Hardware::CPU.arm?
       url "https://github.com/teradata-labs/loom/releases/download/v1.3.0/loom-darwin-arm64.tar.gz"
@@ -23,33 +28,24 @@ class Loom < Formula
     loom_dir = "#{Dir.home}/.loom"
     patterns_dir = "#{loom_dir}/patterns"
 
-    # Download and install patterns
-    ohai "Downloading patterns..."
     system "mkdir", "-p", patterns_dir
 
-    patterns_url = "https://github.com/teradata-labs/loom/archive/refs/tags/v#{version}.tar.gz"
-    patterns_tmp = "#{Dir.tmpdir}/loom-patterns-#{version}.tar.gz"
+    ohai "Installing patterns..."
+    resource("loom-patterns").stage do
+      loom_src = Pathname.glob("loom-*").find(&:directory?)
+      next unless loom_src&.join("patterns")&.directory?
 
-    system "curl", "-L", "-o", patterns_tmp, patterns_url
-    system "tar", "xzf", patterns_tmp, "-C", Dir.tmpdir
-
-    extracted_dir = "#{Dir.tmpdir}/loom-#{version}"
-    if File.directory?("#{extracted_dir}/patterns")
-      system "cp", "-R", "#{extracted_dir}/patterns/", patterns_dir
+      system "cp", "-R", "#{loom_src}/patterns/.", patterns_dir
       pattern_count = Dir.glob("#{patterns_dir}/**/*.yaml").length
       ohai "Installed #{pattern_count} pattern files to #{patterns_dir}"
     end
 
-    # Cleanup
-    system "rm", "-rf", patterns_tmp, extracted_dir
-
-    # Set environment variable hint
-    opoo "Loom TUI client installed successfully!"
-    opoo "To use Loom, you also need to install the server:"
-    opoo "  brew install loom-server"
-    opoo ""
-    opoo "Or start the server manually:"
-    opoo "  looms serve"
+    ohai "Loom TUI client installed successfully!"
+    ohai "To use Loom, you also need to install the server:"
+    ohai "  brew install loom-server"
+    ohai ""
+    ohai "Or start the server manually:"
+    ohai "  looms serve"
   end
 
   def caveats
