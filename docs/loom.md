@@ -4,9 +4,10 @@ LLM agent framework with natural language agent creation and multi-agent orchest
 
 ## Overview
 
-Loom is a Go framework for building autonomous LLM agent threads with natural language agent creation, pattern-guided learning, and multi-agent orchestration.
+Loom is a Go framework for autonomous LLM threads, with natural-language agent creation, pattern-guided learning, and multi-agent orchestration.
 
 **Features:**
+
 - Natural language agent creation
 - Multi-agent orchestration with 6 workflow patterns
 - 90+ reusable patterns across 16 domains
@@ -52,6 +53,7 @@ looms config set-key anthropic_api_key
 ```
 
 **Supported providers:**
+
 - Anthropic Claude
 - AWS Bedrock
 - OpenAI
@@ -72,6 +74,7 @@ brew services start loom-server
 ```
 
 The server runs on:
+
 - **gRPC**: `localhost:60051`
 - **HTTP**: `http://localhost:5006`
 - **Swagger UI**: `http://localhost:5006/swagger-ui`
@@ -85,7 +88,8 @@ loom --thread weaver
 ```
 
 Then type:
-```
+
+```text
 "Create a code review assistant that checks for security issues"
 ```
 
@@ -98,6 +102,7 @@ The weaver meta-agent will create a specialized agent for you in ~30 seconds.
 Terminal UI client for connecting to Loom agents.
 
 **Usage:**
+
 ```bash
 # Connect to weaver (agent creator)
 loom --thread weaver
@@ -110,6 +115,7 @@ looms agent list
 ```
 
 **Features:**
+
 - Interactive TUI with real-time streaming
 - Message history and context
 - Tool execution visualization
@@ -120,6 +126,7 @@ looms agent list
 Multi-agent server with gRPC/HTTP APIs.
 
 **Usage:**
+
 ```bash
 # Start server
 looms serve
@@ -141,6 +148,7 @@ looms pattern show <name>
 ```
 
 **Features:**
+
 - gRPC and HTTP/JSON APIs
 - Session management with persistence
 - Pattern library (90+ patterns installed automatically)
@@ -153,7 +161,8 @@ looms pattern show <name>
 ### Data Directory
 
 Loom stores patterns, configuration, and database at:
-```
+
+```text
 ~/.loom/
 ├── patterns/       # 90+ YAML patterns
 ├── looms.yaml      # Server configuration
@@ -361,7 +370,7 @@ stream.Send(&loomv1.ChatRequest{
 })
 ```
 
-In production code, check errors from `NewClient`, `Chat`, and `Send`, and call `conn.Close()` when you are done with the connection.
+In production code, check errors from `NewClient`, `Chat`, and `Send`; call `conn.Close()` when done.
 
 ### HTTP API
 
@@ -388,7 +397,7 @@ curl http://localhost:5006/v1/agents
 
 ### Swagger UI
 
-Explore the full API at: http://localhost:5006/swagger-ui
+Explore the full API at: <http://localhost:5006/swagger-ui>
 
 ## Homebrew Services
 
@@ -498,11 +507,11 @@ rm -rf ~/.loom
 
 ## Documentation
 
-- **GitHub Repository**: https://github.com/teradata-labs/loom
-- **Full Documentation**: https://github.com/teradata-labs/loom/tree/main/docs
-- **Quick Start Guide**: https://github.com/teradata-labs/loom#quick-start
-- **API Documentation**: http://localhost:5006/swagger-ui (when server running)
-- **Issues**: https://github.com/teradata-labs/loom/issues
+- **GitHub Repository**: <https://github.com/teradata-labs/loom>
+- **Full Documentation**: <https://github.com/teradata-labs/loom/tree/main/docs>
+- **Quick Start Guide**: <https://github.com/teradata-labs/loom#quick-start>
+- **API Documentation**: <http://localhost:5006/swagger-ui> (when server running)
+- **Issues**: <https://github.com/teradata-labs/loom/issues>
 
 ## Examples
 
@@ -535,8 +544,8 @@ loom --thread weaver
 
 ## Contributing
 
-Issues and contributions are welcome at https://github.com/teradata-labs/loom
+Issues and contributions are welcome at <https://github.com/teradata-labs/loom>
 
 ## License
 
-Apache-2.0 - See https://github.com/teradata-labs/loom/blob/main/LICENSE
+Apache-2.0 - See <https://github.com/teradata-labs/loom/blob/main/LICENSE>
