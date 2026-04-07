@@ -28,13 +28,14 @@ brew install loom-server  # Server only
 LLM agent framework with natural language agent creation and multi-agent orchestration.
 
 **Install:**
+
 ```bash
 brew install loom loom-server
 ```
 
-**Documentation:** See [docs/loom.md](docs/loom.md) for complete installation, configuration, and usage guide.
+**Documentation:** See [docs/loom.md](docs/loom.md) for complete installation, configuration, and usage guidelines.
 
-**Repository:** https://github.com/teradata-labs/loom
+**Repository:** <https://github.com/teradata-labs/loom>
 
 ---
 
@@ -66,7 +67,8 @@ brew untap teradata-labs/tap
 ## Contributing
 
 Issues and contributions are welcome at the respective tool repositories:
-- Loom: https://github.com/teradata-labs/loom/issues
+
+- Loom: <https://github.com/teradata-labs/loom/issues>
 
 ## License
 
