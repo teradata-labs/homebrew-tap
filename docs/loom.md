@@ -344,6 +344,8 @@ workflow:
 
 ```go
 import (
+    "context"
+
     loomv1 "github.com/teradata-labs/loom/gen/go/loom/v1"
     "google.golang.org/grpc"
     "google.golang.org/grpc/credentials/insecure"
