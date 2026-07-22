@@ -6,7 +6,7 @@ class Loom < Formula
 
   resource "loom-patterns" do
     url "https://github.com/teradata-labs/loom/archive/refs/tags/v#{version}.tar.gz"
-    sha256 "1fa28396813e14df17d318d380d7950c3b006fa63a4f406151d31cf255cd6d6c"
+    sha256 "d03bcac965ca866b68cffdd96910a9eda98ec4e153d87e1599d4740a5a65ead1"
   end
 
   on_macos do
