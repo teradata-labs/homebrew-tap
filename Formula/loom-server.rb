@@ -20,100 +20,52 @@ class LoomServer < Formula
   end
 
   def install
-    # Install binary
     bin.install "looms-darwin-arm64" => "looms" if Hardware::CPU.arm?
     bin.install "looms-darwin-amd64" => "looms" if Hardware::CPU.intel?
 
-    # Create Loom data directory
-    loom_dir = "#{Dir.home}/.loom"
-    patterns_dir = "#{loom_dir}/patterns"
-    config_file = "#{loom_dir}/looms.yaml"
-
-    system "mkdir", "-p", loom_dir
-    system "mkdir", "-p", patterns_dir
-
-    ohai "Installing patterns..."
+    # HOME is sandboxed during install, so patterns go into the keg;
+    # users copy them to ~/.loom/patterns (see caveats). Config is
+    # created by the binary itself via 'looms config init'.
     resource("loom-patterns").stage do
-      loom_src = Pathname.glob("loom-*").find(&:directory?)
-      odie "Could not find Loom source directory in patterns archive" unless loom_src&.directory?
-      odie "Could not find patterns/ in Loom source (archive layout may have changed)" unless loom_src.join("patterns").directory?
-
-      system "cp", "-R", "#{loom_src}/patterns/.", patterns_dir
-      pattern_count = Dir.glob("#{patterns_dir}/**/*.yaml").length
-      ohai "Installed #{pattern_count} pattern files to #{patterns_dir}"
+      src = Pathname.pwd
+      unless src.join("patterns").directory?
+        src = Pathname.glob("loom-*").find { |d| d.join("patterns").directory? }
+      end
+      odie "Could not find patterns/ in Loom source (archive layout may have changed)" if src.nil?
+      pkgshare.install src/"patterns"
     end
-
-    # Create default config if it doesn't exist
-    unless File.exist?(config_file)
-      ohai "Creating default configuration..."
-      File.write(config_file, <<~YAML)
-        # Loom Server Configuration
-        server:
-          host: "0.0.0.0"
-          port: 60051
-
-        # Database stored in Loom data directory
-        database:
-          path: "#{loom_dir}/loom.db"
-
-        # Communication system (shared memory, message queue)
-        communication:
-          store:
-            backend: sqlite
-            path: "#{loom_dir}/loom.db"
-
-        # Observability (optional - requires Hawk)
-        observability:
-          enabled: false
-
-        # MCP servers (add your own)
-        mcp:
-          servers: {}
-
-        # No pre-configured agents - use the weaver to create threads on demand
-        agents:
-          agents: {}
-      YAML
-      ohai "Configuration created at #{config_file}"
-    end
-  end
-
-  def post_install
-    ohai "Loom server installed successfully!"
-    ohai ""
-    ohai "Next steps:"
-    ohai "  1. Configure an LLM provider:"
-    ohai "       looms config set llm.provider anthropic"
-    ohai "       looms config set-key anthropic_api_key"
-    ohai ""
-    ohai "  2. Start the server:"
-    ohai "       looms serve"
-    ohai ""
-    ohai "  3. Install the TUI client (if not already installed):"
-    ohai "       brew install loom"
-    ohai ""
-    ohai "  4. Create your first agent (in another terminal):"
-    ohai "       loom --thread weaver"
   end
 
   def caveats
     <<~EOS
       Loom server has been installed.
 
-      Configuration file: #{Dir.home}/.loom/looms.yaml
-      Patterns directory: #{Dir.home}/.loom/patterns
+      Pattern library is staged at:
+        #{opt_pkgshare}/patterns
 
-      To start the server:
-        looms serve
+      To install patterns into your Loom data directory:
+        mkdir -p ~/.loom/patterns
+        cp -R #{opt_pkgshare}/patterns/. ~/.loom/patterns/
 
-      The server will run on:
-        - gRPC: localhost:60051
-        - HTTP: http://localhost:5006
-        - Swagger UI: http://localhost:5006/swagger-ui
+      Next steps:
+        1. Create a starter configuration ($LOOM_DATA_DIR/looms.yaml,
+           default: $HOME/.loom/looms.yaml):
+             looms config init
 
-      To configure an LLM provider:
-        looms config set llm.provider anthropic
-        looms config set-key anthropic_api_key
+        2. Configure an LLM provider:
+             looms config set llm.provider anthropic
+             looms config set-key anthropic_api_key
+
+        3. Start the server:
+             looms serve
+
+           The server will run on:
+             - gRPC: localhost:60051
+             - HTTP: http://localhost:5006
+             - Swagger UI: http://localhost:5006/swagger-ui
+
+        4. Install the TUI client (if not already installed):
+             brew install teradata-labs/tap/loom
 
       Documentation: https://github.com/teradata-labs/loom
     EOS
@@ -129,6 +81,7 @@ class LoomServer < Formula
 
   test do
     assert_match "Usage:", shell_output("#{bin}/looms --help")
+    assert_predicate pkgshare/"patterns", :directory?
 
     # Test config command
     system "#{bin}/looms", "config", "list"

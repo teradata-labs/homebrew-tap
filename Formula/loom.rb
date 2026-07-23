@@ -20,61 +20,50 @@ class Loom < Formula
   end
 
   def install
-    # Install binary
     bin.install "loom-darwin-arm64" => "loom" if Hardware::CPU.arm?
     bin.install "loom-darwin-amd64" => "loom" if Hardware::CPU.intel?
 
-    # Create Loom data directory
-    loom_dir = "#{Dir.home}/.loom"
-    patterns_dir = "#{loom_dir}/patterns"
-
-    system "mkdir", "-p", patterns_dir
-
-    ohai "Installing patterns..."
+    # HOME is sandboxed during install, so patterns go into the keg;
+    # users copy them to ~/.loom/patterns (see caveats).
     resource("loom-patterns").stage do
-      loom_src = Pathname.glob("loom-*").find(&:directory?)
-      odie "Could not find Loom source directory in patterns archive" unless loom_src&.directory?
-      odie "Could not find patterns/ in Loom source (archive layout may have changed)" unless loom_src.join("patterns").directory?
-
-      system "cp", "-R", "#{loom_src}/patterns/.", patterns_dir
-      pattern_count = Dir.glob("#{patterns_dir}/**/*.yaml").length
-      ohai "Installed #{pattern_count} pattern files to #{patterns_dir}"
+      src = Pathname.pwd
+      unless src.join("patterns").directory?
+        src = Pathname.glob("loom-*").find { |d| d.join("patterns").directory? }
+      end
+      odie "Could not find patterns/ in Loom source (archive layout may have changed)" if src.nil?
+      pkgshare.install src/"patterns"
     end
-
-    ohai "Loom TUI client installed successfully!"
-    ohai "To use Loom, you also need to install the server:"
-    ohai "  brew install loom-server"
-    ohai ""
-    ohai "Or start the server manually:"
-    ohai "  looms serve"
   end
 
   def caveats
     <<~EOS
       Loom TUI client has been installed.
 
+      Pattern library is staged at:
+        #{opt_pkgshare}/patterns
+
+      To install patterns into your Loom data directory:
+        mkdir -p ~/.loom/patterns
+        cp -R #{opt_pkgshare}/patterns/. ~/.loom/patterns/
+
       Next steps:
         1. Install the Loom server:
-           brew install loom-server
+           brew install teradata-labs/tap/loom-server
 
-        2. Configure an LLM provider:
-           export ANTHROPIC_API_KEY="your-key"
-           # or configure Bedrock, OpenAI, etc.
-
-        3. Start the server (in another terminal):
+        2. Start the server (in another terminal):
            looms serve
 
-        4. Create your first agent:
+        3. Create your first agent:
            loom --thread weaver
 
         Then type: "Create a code review assistant"
 
       Documentation: https://github.com/teradata-labs/loom
-      Patterns installed to: #{Dir.home}/.loom/patterns
     EOS
   end
 
   test do
     assert_match "Usage:", shell_output("#{bin}/loom --help")
+    assert_predicate pkgshare/"patterns", :directory?
   end
 end
