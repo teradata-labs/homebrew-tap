@@ -5,16 +5,16 @@ class LoomServer < Formula
   license "Apache-2.0"
 
   resource "loom-patterns" do
-    url "https://github.com/teradata-labs/loom/archive/refs/tags/v#{version}.tar.gz"
+    url "https://github.com/teradata-labs/loom/archive/refs/tags/v1.3.0.tar.gz"
     sha256 "d03bcac965ca866b68cffdd96910a9eda98ec4e153d87e1599d4740a5a65ead1"
   end
 
   on_macos do
     if Hardware::CPU.arm?
-      url "https://github.com/teradata-labs/loom/releases/download/v#{version}/looms-darwin-arm64.tar.gz"
+      url "https://github.com/teradata-labs/loom/releases/download/v1.3.0/looms-darwin-arm64.tar.gz"
       sha256 "678afbbd2568f2ba9ce03498b3fbdcfeabc4aa12547882ded8bca3ea23dce242"
     else
-      url "https://github.com/teradata-labs/loom/releases/download/v#{version}/looms-darwin-amd64.tar.gz"
+      url "https://github.com/teradata-labs/loom/releases/download/v1.3.0/looms-darwin-amd64.tar.gz"
       sha256 "de8146f358a2097a064d0c0ce8b06494e6cb768ba190b15ede78000f84d5c0dc"
     end
   end
